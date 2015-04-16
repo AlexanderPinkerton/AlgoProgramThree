@@ -10,9 +10,12 @@ import java.util.*;
 
 public class Graph<T> {
 
+    private boolean debug = false;
 
     private int edgeCount=0;
     private int vertexCount=0;
+
+
     private static final int INFINITY = Integer.MAX_VALUE;
 
     private Map<String,Vertex> vertexList = new HashMap<String,Vertex>( );
@@ -27,7 +30,7 @@ public class Graph<T> {
             vertexCount++;
             return v;
         }
-        //System.out.println("Vertex not added.");
+        if(debug){System.out.println("Vertex " + name + " already exists.");}
         return vertexList.get(name);
     }
 
@@ -38,7 +41,7 @@ public class Graph<T> {
             vertexCount++;
             return v;
         }
-        //System.out.println("Vertex not added.");
+        if(debug){System.out.println("Vertex " + name + " already exists.");}
         return vertexList.get(name);
     }
 
@@ -53,7 +56,6 @@ public class Graph<T> {
         v1.outgoingEdges.add(new Edge(v1,v2,weight));
         edgeCount++;
     }
-
 
 
     public Vertex getVertex(String name){
@@ -76,19 +78,27 @@ public class Graph<T> {
         this.vertexList = vertexList;
     }
 
+    public void setDebug(boolean debug) {
+        this.debug = debug;
+    }
 
 
+    public void printGraph(){
+        Iterator it = vertexList.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry)it.next();
+            System.out.println(pair.getKey());
+            it.remove(); // avoids a ConcurrentModificationException
+            ((Vertex)pair.getValue()).printEdges();
+            System.out.println("-------------------------------------");
+        }
 
-
-
-
-
-
+    }
 
     //=======================================================================================================
 
 
-    public class Vertex<V> {
+    private class Vertex<V> {
         private String name;
         private Object data;
         private List<Edge> outgoingEdges;
@@ -150,6 +160,15 @@ public class Graph<T> {
             result = 31 * result + (outgoingEdges != null ? outgoingEdges.hashCode() : 0);
             return result;
         }
+
+
+        public void printEdges(){
+            for(Edge e: outgoingEdges){
+                System.out.println("Edge: " + name + " --> " + e.getEnd().getName() + "  Weight: " + e.getWeight());
+            }
+        }
+
+
     }
 
     //=======================================================================================================
