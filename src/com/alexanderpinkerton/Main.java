@@ -4,8 +4,7 @@ package com.alexanderpinkerton;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.Map;
+
 
 public class Main {
 
@@ -27,16 +26,21 @@ public class Main {
                         graph.getVertex(lineContents[1]),
                         Float.parseFloat(lineContents[2]));
 
-
+                graph.addEdge(
+                        graph.getVertex(lineContents[1]),
+                        graph.getVertex(lineContents[0]),
+                        Float.parseFloat(lineContents[2]));
 
             }
         }catch (IOException e){
-
+            e.printStackTrace();
         }
-
 
         graph.printGraph();
 
+        graph.removeEdge(graph.getVertex("Duke"), graph.getVertex("Belk"));
+
+        graph.printGraph();
 
 
     }

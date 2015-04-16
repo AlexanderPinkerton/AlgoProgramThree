@@ -22,7 +22,6 @@ public class Graph<T> {
 
 
 
-
     public Vertex addVertex(String name){
         if(!vertexList.containsKey(name)){
             Vertex v = new Vertex(name);
@@ -58,6 +57,17 @@ public class Graph<T> {
     }
 
 
+    public void removeEdge(Vertex start, Vertex end){
+
+        for(Iterator<Edge> it=start.getOutgoingEdges().iterator(); it.hasNext(); ) {
+            if(it.next().getEnd().equals(end)) {
+                it.remove();
+                break;
+            }
+        }
+    }
+
+
     public Vertex getVertex(String name){
         return vertexList.get(name);
     }
@@ -88,7 +98,7 @@ public class Graph<T> {
         while (it.hasNext()) {
             Map.Entry pair = (Map.Entry)it.next();
             System.out.println(pair.getKey());
-            it.remove(); // avoids a ConcurrentModificationException
+            //it.remove(); // avoids a ConcurrentModificationException
             ((Vertex)pair.getValue()).printEdges();
             System.out.println("-------------------------------------");
         }
@@ -164,7 +174,7 @@ public class Graph<T> {
 
         public void printEdges(){
             for(Edge e: outgoingEdges){
-                System.out.println("Edge: " + name + " --> " + e.getEnd().getName() + "  Weight: " + e.getWeight());
+                System.out.println("Edge: " + name + " --> " + e.getEnd().getName() + "\t\tWeight: " + e.getWeight());
             }
         }
 
