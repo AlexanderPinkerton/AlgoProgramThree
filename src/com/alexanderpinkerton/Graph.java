@@ -28,7 +28,7 @@ public class Graph<T> {
             return v;
         }
         //System.out.println("Vertex not added.");
-        return null;
+        return vertexList.get(name);
     }
 
     public Vertex addVertex(String name, T data){
@@ -39,7 +39,7 @@ public class Graph<T> {
             return v;
         }
         //System.out.println("Vertex not added.");
-        return null;
+        return vertexList.get(name);
     }
 
 
@@ -54,6 +54,11 @@ public class Graph<T> {
         edgeCount++;
     }
 
+
+
+    public Vertex getVertex(String name){
+        return vertexList.get(name);
+    }
 
     public int getEdgeCount() {
         return edgeCount;
@@ -79,10 +84,11 @@ public class Graph<T> {
 
 
 
+
     //=======================================================================================================
 
 
-    private class Vertex<V> {
+    public class Vertex<V> {
         private String name;
         private Object data;
         private List<Edge> outgoingEdges;

@@ -1,10 +1,10 @@
 package com.alexanderpinkerton;
 
-import sun.security.provider.certpath.Vertex;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -20,15 +20,16 @@ public class Main {
                 // process the line.
                 String[] lineContents = line.split(" ");
 
+                //TODO Graph.getVertex
+
                 graph.addVertex(lineContents[0]);
                 graph.addVertex(lineContents[1]);
 
-                /*
                 graph.addEdge(
-                        graph.addVertex(lineContents[0]),
-                        graph.addVertex(lineContents[1]),
+                        graph.getVertex(lineContents[0]),
+                        graph.getVertex(lineContents[1]),
                         Float.parseFloat(lineContents[2]));
-                */
+
 
 
             }
