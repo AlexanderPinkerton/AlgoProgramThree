@@ -58,10 +58,25 @@ public class Graph<T> {
 
 
     public void removeEdge(Vertex start, Vertex end){
+        //Loop through the linked list via an iterator and remove the matching edge.
+        for(Iterator<Edge> it=start.getOutgoingEdges().iterator(); it.hasNext(); ) {
+            if(it.next().getEnd().equals(end)) {
+                it.remove();
+                if(debug){System.out.println("Edge:\t\t" + start.getName() + " ----> " + end.getName() + "   Removed.");}
+                break;
+            }
+        }
+    }
+
+    public void removeEdge(String startName, String endName){
+        //Loop through the linked list via an iterator and remove the matching edge.
+        Vertex start = vertexList.get(startName);
+        Vertex end = vertexList.get(endName);
 
         for(Iterator<Edge> it=start.getOutgoingEdges().iterator(); it.hasNext(); ) {
             if(it.next().getEnd().equals(end)) {
                 it.remove();
+                if(debug){System.out.println("Edge:\t\t" + start.getName() + " ----> " + end.getName() + "   Removed.");}
                 break;
             }
         }
@@ -98,28 +113,85 @@ public class Graph<T> {
         while (it.hasNext()) {
             Map.Entry pair = (Map.Entry)it.next();
             System.out.println(pair.getKey());
-            //it.remove(); // avoids a ConcurrentModificationException
             ((Vertex)pair.getValue()).printEdges();
             System.out.println("-------------------------------------");
         }
 
     }
 
+
+
+    public void getShortestPath(Vertex start){
+
+        PriorityQueue<Vertex> queue = new PriorityQueue<>();
+
+        Iterator it = vertexList.entrySet().iterator();
+
+        //For Every vertex in the graph, init the distance from source and previous pointers.
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry)it.next();
+            Vertex v = (Vertex) pair.getValue();
+
+            if(pair.getValue().equals(start)){
+                v.setDistanceFromSource(0);
+            }else{
+                v.setDistanceFromSource(INFINITY);
+            }
+
+            v.setPrev(null);
+            queue.add(v);
+        }
+
+
+        while (!queue.isEmpty()){
+
+            //Retrieve the highest priority from the queue.
+            Vertex current = queue.poll();
+
+            //Scan all outgoing edges and update their distances and previous.
+            for(int i=0;i<current.outgoingEdges.size();i++){
+
+                Edge e = (Edge)current.getOutgoingEdges().get(i);
+                Vertex endVertex = e.getEnd();
+
+                if(current.distanceFromSource + e.getWeight() < endVertex.distanceFromSource){
+                    endVertex.setDistanceFromSource(current.distanceFromSource + e.getWeight());
+                    endVertex.setPrev(current);
+                    if(debug){System.out.println(endVertex.getName() + "'s previous node is " + current.getName());}
+                    if(debug){System.out.println(endVertex.getName() + "'s distance is " + endVertex.getDistanceFromSource());}
+                }
+
+
+            }
+
+        }
+
+
+
+
+    }
+
+
+
+
+
     //=======================================================================================================
 
 
-    private class Vertex<V> {
+    private class Vertex<V> implements Comparable<Vertex>{
         private String name;
+        private Vertex prev;
+        private float distanceFromSource;
         private Object data;
-        private List<Edge> outgoingEdges;
+        private LinkedList<Edge> outgoingEdges;
 
         private Vertex(String name){
-            outgoingEdges = new LinkedList<Edge>();
+            outgoingEdges = new LinkedList<>();
             this.name = name;
         }
 
         private Vertex(String name, V data){
-            outgoingEdges = new LinkedList<Edge>();
+            outgoingEdges = new LinkedList<>();
             this.data = data;
             this.name = name;
         }
@@ -144,8 +216,20 @@ public class Graph<T> {
             return outgoingEdges;
         }
 
-        public void setOutgoingEdges(List<Edge> outgoingEdges) {
-            this.outgoingEdges = outgoingEdges;
+        public float getDistanceFromSource() {
+            return distanceFromSource;
+        }
+
+        public void setDistanceFromSource(float distanceFromSource) {
+            this.distanceFromSource = distanceFromSource;
+        }
+
+        public Vertex getPrev() {
+            return prev;
+        }
+
+        public void setPrev(Vertex prev) {
+            this.prev = prev;
         }
 
         @Override
@@ -179,6 +263,14 @@ public class Graph<T> {
         }
 
 
+        @Override
+        public int compareTo(Vertex v) {
+            if(distanceFromSource <= v.getDistanceFromSource()){
+                return -1;
+            }else{
+                return 1;
+            }
+        }
     }
 
     //=======================================================================================================

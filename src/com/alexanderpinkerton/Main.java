@@ -11,7 +11,7 @@ public class Main {
     public static void main(String[] args) {
 
         Graph graph = new Graph();
-        //graph.setDebug(true);
+        graph.setDebug(true);
 
         try(BufferedReader br = new BufferedReader(new FileReader(args[0]))) {
             for(String line; (line = br.readLine()) != null; ) {
@@ -36,12 +36,9 @@ public class Main {
             e.printStackTrace();
         }
 
-        graph.printGraph();
-
-        graph.removeEdge(graph.getVertex("Duke"), graph.getVertex("Belk"));
-
-        graph.printGraph();
-
+        //graph.removeEdge("Duke","Belk");
+        //graph.printGraph();
+        graph.getShortestPath(graph.getVertex("Duke"));
 
     }
 }
