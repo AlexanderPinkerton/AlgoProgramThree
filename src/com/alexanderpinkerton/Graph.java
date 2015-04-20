@@ -121,13 +121,16 @@ public class Graph<T> {
 
 
 
-    public void getShortestPath(Vertex start){
+    public void getShortestPath(String startName, String endName){
+
+        Vertex start = getVertex(startName);
+        Vertex end = getVertex(endName);
 
         PriorityQueue<Vertex> queue = new PriorityQueue<>();
-
-        Iterator it = vertexList.entrySet().iterator();
+        ArrayList<String> path = new ArrayList<>();
 
         //For Every vertex in the graph, init the distance from source and previous pointers.
+        Iterator it = vertexList.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry pair = (Map.Entry)it.next();
             Vertex v = (Vertex) pair.getValue();
@@ -137,14 +140,11 @@ public class Graph<T> {
             }else{
                 v.setDistanceFromSource(INFINITY);
             }
-
             v.setPrev(null);
             queue.add(v);
         }
 
-
         while (!queue.isEmpty()){
-
             //Retrieve the highest priority from the queue.
             Vertex current = queue.poll();
 
@@ -160,24 +160,22 @@ public class Graph<T> {
                     if(debug){System.out.println(endVertex.getName() + "'s previous node is " + current.getName());}
                     if(debug){System.out.println(endVertex.getName() + "'s distance is " + endVertex.getDistanceFromSource());}
                 }
-
-
             }
-
         }
 
-
-
-
+        /* Output the path in easy to read format */
+        Vertex x = end;
+        path.add(end.getName());
+        while(x.prev!=null){
+            path.add(x.getPrev().getName());
+            x = x.getPrev();
+        }
+        Collections.reverse(path);
+        for(String s: path){System.out.print(s + " ");}
+        System.out.println(end.distanceFromSource);
     }
 
-
-
-
-
     //=======================================================================================================
-
-
     private class Vertex<V> implements Comparable<Vertex>{
         private String name;
         private Vertex prev;
@@ -272,10 +270,7 @@ public class Graph<T> {
             }
         }
     }
-
     //=======================================================================================================
-
-
     private class Edge {
 
         private Vertex start;
@@ -318,9 +313,6 @@ public class Graph<T> {
         }
 
     }
-
     //=======================================================================================================
-
-
 
 }

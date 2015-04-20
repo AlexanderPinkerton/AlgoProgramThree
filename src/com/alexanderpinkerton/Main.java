@@ -11,7 +11,7 @@ public class Main {
     public static void main(String[] args) {
 
         Graph graph = new Graph();
-        graph.setDebug(true);
+        //graph.setDebug(true);
 
         try(BufferedReader br = new BufferedReader(new FileReader(args[0]))) {
             for(String line; (line = br.readLine()) != null; ) {
@@ -25,11 +25,13 @@ public class Main {
                         graph.getVertex(lineContents[0]),
                         graph.getVertex(lineContents[1]),
                         Float.parseFloat(lineContents[2]));
-
+                /*
                 graph.addEdge(
                         graph.getVertex(lineContents[1]),
                         graph.getVertex(lineContents[0]),
                         Float.parseFloat(lineContents[2]));
+                */
+
 
             }
         }catch (IOException e){
@@ -38,7 +40,7 @@ public class Main {
 
         //graph.removeEdge("Duke","Belk");
         //graph.printGraph();
-        graph.getShortestPath(graph.getVertex("Duke"));
+        graph.getShortestPath("Duke","Woodward");
 
     }
 }
