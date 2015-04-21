@@ -18,7 +18,7 @@ public class Graph<T> {
 
     private static final int INFINITY = Integer.MAX_VALUE;
 
-    private Map<String,Vertex> vertexList = new HashMap<String,Vertex>( );
+    private Map<String,Vertex> vertexList = new HashMap<>( );
 
 
 
@@ -114,12 +114,40 @@ public class Graph<T> {
             Map.Entry pair = (Map.Entry)it.next();
             System.out.println(pair.getKey());
             ((Vertex)pair.getValue()).printEdges();
-            System.out.println("-------------------------------------");
         }
 
     }
 
+    public void getReachable(String vertex){
+        Set<Vertex> reachable = new HashSet<>();
+        Queue<Vertex> toVisit = new LinkedList<>();
+        Vertex v = getVertex(vertex);
 
+        while(!v.outgoingEdges.isEmpty() && !v.isVisited()){
+            for (int i=0;i<v.outgoingEdges.size();i++){
+                v.setVisited(true);
+                Edge e = (Edge) v.getOutgoingEdges().get(i);
+                toVisit.add(e.end);
+                reachable.add(e.end);
+                v = toVisit.poll();
+            }
+        }
+
+        Iterator iterator = reachable.iterator();
+        while(iterator.hasNext()){
+            Vertex vert = (Vertex)iterator.next();
+            System.out.println("  " + vert.name);
+        }
+    }
+
+    public void printReachable(){
+        Iterator it = vertexList.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry)it.next();
+            System.out.println(pair.getValue().toString());
+            getReachable(pair.getValue().toString());
+        }
+    }
 
     public void getShortestPath(String startName, String endName){
 
@@ -177,9 +205,10 @@ public class Graph<T> {
 
     //=======================================================================================================
     private class Vertex<V> implements Comparable<Vertex>{
+        private float distanceFromSource;
+        private boolean visited = false;
         private String name;
         private Vertex prev;
-        private float distanceFromSource;
         private Object data;
         private LinkedList<Edge> outgoingEdges;
 
@@ -230,6 +259,27 @@ public class Graph<T> {
             this.prev = prev;
         }
 
+        public boolean isVisited() {
+            return visited;
+        }
+
+        public void setVisited(boolean visited) {
+            this.visited = visited;
+        }
+
+        public void printEdges(){
+            for(Edge e: outgoingEdges){
+                /*Collections.sort(outgoingEdges, new Comparator<Edge>() {
+                    @Override
+                    public int compare(Edge o1, Edge o2) {
+                        return o1.getEnd().getName().compareTo(o2.getEnd().getName());
+                    }
+                });
+                */
+                System.out.println("  " + e.getEnd().getName() + " " + e.getWeight());
+            }
+        }
+
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
@@ -253,14 +303,6 @@ public class Graph<T> {
             return result;
         }
 
-
-        public void printEdges(){
-            for(Edge e: outgoingEdges){
-                System.out.println("Edge: " + name + " --> " + e.getEnd().getName() + "\t\tWeight: " + e.getWeight());
-            }
-        }
-
-
         @Override
         public int compareTo(Vertex v) {
             if(distanceFromSource <= v.getDistanceFromSource()){
@@ -268,6 +310,11 @@ public class Graph<T> {
             }else{
                 return 1;
             }
+        }
+
+        @Override
+        public String toString() {
+            return name;
         }
     }
     //=======================================================================================================
