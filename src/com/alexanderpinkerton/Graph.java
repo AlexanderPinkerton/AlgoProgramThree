@@ -115,21 +115,28 @@ public class Graph<T> {
     public void getReachable(String vertex){
         Set<Vertex> reachable = new HashSet<>();
         Queue<Vertex> toVisit = new LinkedList<>();
-        Vertex v = getVertex(vertex);
+        Vertex current = getVertex(vertex);
+        //Creating a starting point for the loop.
+        toVisit.add(current);
 
-        while(!v.outgoingEdges.isEmpty() && !v.isVisited()){
-            for (int i=0;i<v.outgoingEdges.size();i++){
-                v.setVisited(true);
-                Edge e = (Edge) v.getOutgoingEdges().get(i);
+        //While every reachable vertex has not yet been visited.
+        while(!toVisit.isEmpty() && !current.isVisited()){
+            //Check all outgoing edges of the current vertex and and their endpoints to the visit queue.
+            for (int i=0;i<current.outgoingEdges.size();i++){
+                Edge e = (Edge) current.getOutgoingEdges().get(i);
                 toVisit.add(e.end);
                 reachable.add(e.end);
-                v = toVisit.poll();
             }
+            //Mark the current vertex as visited/reachable.
+            current.setVisited(true);
+            //Update the current vertex to the next one in the queue
+            current = toVisit.poll();
         }
 
         Iterator iterator = reachable.iterator();
         while(iterator.hasNext()){
             Vertex vert = (Vertex)iterator.next();
+            vert.setVisited(false);
             System.out.println("  " + vert.name);
         }
     }
