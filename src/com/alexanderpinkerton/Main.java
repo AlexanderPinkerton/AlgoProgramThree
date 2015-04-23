@@ -5,7 +5,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Scanner;
+
 
 
 public class Main {
@@ -44,7 +44,7 @@ public class Main {
 
 
 
-        while(!input.equals("exit")){
+        while(!input.equals("quit")){
             System.out.println("Awaiting Query: ");
             try{
                 BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));

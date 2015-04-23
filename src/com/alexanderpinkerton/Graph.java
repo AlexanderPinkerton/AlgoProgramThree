@@ -15,7 +15,6 @@ public class Graph<T> {
     private int edgeCount=0;
     private int vertexCount=0;
 
-
     private static final int INFINITY = Integer.MAX_VALUE;
 
     private Map<String,Vertex> vertexList = new HashMap<>( );
@@ -44,8 +43,6 @@ public class Graph<T> {
         return vertexList.get(name);
     }
 
-
-
     public void addEdge(Vertex v1, Vertex v2){
         v1.outgoingEdges.add(new Edge(v1,v2));
         edgeCount++;
@@ -55,7 +52,6 @@ public class Graph<T> {
         v1.outgoingEdges.add(new Edge(v1,v2,weight));
         edgeCount++;
     }
-
 
     public void removeEdge(Vertex start, Vertex end){
         //Loop through the linked list via an iterator and remove the matching edge.
@@ -82,7 +78,6 @@ public class Graph<T> {
         }
     }
 
-
     public Vertex getVertex(String name){
         return vertexList.get(name);
     }
@@ -106,7 +101,6 @@ public class Graph<T> {
     public void setDebug(boolean debug) {
         this.debug = debug;
     }
-
 
     public void printGraph(){
         Iterator it = vertexList.entrySet().iterator();
@@ -181,6 +175,10 @@ public class Graph<T> {
 
                 Edge e = (Edge)current.getOutgoingEdges().get(i);
                 Vertex endVertex = e.getEnd();
+
+                /***
+                 * As you discovered, a priority queue does not resort all elements whenever an element is added or removed.
+                 ***/
 
                 if(current.distanceFromSource + e.getWeight() < endVertex.distanceFromSource){
                     endVertex.setDistanceFromSource(current.distanceFromSource + e.getWeight());
@@ -268,14 +266,13 @@ public class Graph<T> {
         }
 
         public void printEdges(){
-            for(Edge e: outgoingEdges){
-                /*Collections.sort(outgoingEdges, new Comparator<Edge>() {
+             Collections.sort(outgoingEdges, new Comparator<Edge>() {
                     @Override
                     public int compare(Edge o1, Edge o2) {
                         return o1.getEnd().getName().compareTo(o2.getEnd().getName());
                     }
                 });
-                */
+            for(Edge e: outgoingEdges){
                 System.out.println("  " + e.getEnd().getName() + " " + e.getWeight());
             }
         }
