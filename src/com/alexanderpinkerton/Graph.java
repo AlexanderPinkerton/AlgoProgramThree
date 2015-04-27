@@ -43,14 +43,32 @@ public class Graph<T> {
         return vertexList.get(name);
     }
 
-    public void addEdge(Vertex v1, Vertex v2){
-        v1.outgoingEdges.add(new Edge(v1,v2));
+    public void addEdge(String start, String end){
+        //Add vertex if it is not there.
+        if(!vertexExists(start)){
+            addVertex(start);
+        }
+        if(!vertexExists(end)){
+            addVertex(end);
+        }
+
+        getVertex(start).outgoingEdges.add(new Edge(getVertex(start),getVertex(end)));
         edgeCount++;
+        if(debug){System.out.println("Edge Added");}
     }
 
-    public void addEdge(Vertex v1, Vertex v2, float weight){
-        v1.outgoingEdges.add(new Edge(v1,v2,weight));
+    public void addEdge(String start, String end, float weight){
+        //Add vertex if it is not there.
+        if(!vertexExists(start)){
+            addVertex(start);
+        }
+        if(!vertexExists(end)){
+            addVertex(end);
+        }
+
+        getVertex(start).outgoingEdges.add(new Edge(getVertex(start), getVertex(end), weight));
         edgeCount++;
+        if(debug){System.out.println("Edge Added");}
     }
 
     public void removeEdge(Vertex start, Vertex end){
@@ -82,6 +100,15 @@ public class Graph<T> {
         return vertexList.get(name);
     }
 
+    public boolean vertexExists(String vertexName){
+        if(getVertex(vertexName) != null){
+            return true;
+        }else{
+            System.out.println("Vertex not found");
+            return false;
+        }
+    }
+
     public int getEdgeCount() {
         return edgeCount;
     }
@@ -103,7 +130,9 @@ public class Graph<T> {
     }
 
     public void printGraph(){
-        Iterator it = vertexList.entrySet().iterator();
+        //Sort the hashMap
+        Map<String, Vertex> sortedMap = new TreeMap<>(vertexList);
+        Iterator it = sortedMap.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry pair = (Map.Entry)it.next();
             System.out.println(pair.getKey());
@@ -142,7 +171,8 @@ public class Graph<T> {
     }
 
     public void printReachable(){
-        Iterator it = vertexList.entrySet().iterator();
+        Map<String, Vertex> sortedMap = new TreeMap<>(vertexList);
+        Iterator it = sortedMap.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry pair = (Map.Entry)it.next();
             System.out.println(pair.getValue().toString());

@@ -25,13 +25,13 @@ public class Main {
                 graph.addVertex(lineContents[1]);
 
                 graph.addEdge(
-                        graph.getVertex(lineContents[0]),
-                        graph.getVertex(lineContents[1]),
+                        lineContents[0],
+                        lineContents[1],
                         Float.parseFloat(lineContents[2]));
 
                 graph.addEdge(
-                        graph.getVertex(lineContents[1]),
-                        graph.getVertex(lineContents[0]),
+                        lineContents[1],
+                        lineContents[0],
                         Float.parseFloat(lineContents[2]));
 
 
@@ -52,7 +52,7 @@ public class Main {
                 String[] commandArgs = input.split(" ");
                 switch (commandArgs[0]){
                     case "addedge":
-                        graph.addEdge(graph.getVertex(commandArgs[1]),graph.getVertex(commandArgs[2]));
+                        graph.addEdge(commandArgs[1],commandArgs[2]);
                         break;
                     case "deleteedge":
                         graph.removeEdge(commandArgs[2],commandArgs[1]);
