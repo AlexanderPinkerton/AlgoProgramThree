@@ -8,21 +8,21 @@ public class PriorityQ<U> {
     private static final int DEFAULT_CAPACITY = 50;
 
     protected int count;
-    protected U[] tree;
+    protected U[] heap;
     protected int modCount;
 
 
     public PriorityQ()
     {
         count = 0;
-        tree = (U[]) new Object[DEFAULT_CAPACITY];
+        heap = (U[]) new Object[DEFAULT_CAPACITY];
     }
 
     public PriorityQ(U element)
     {
         count = 1;
-        tree = (U[]) new Object[DEFAULT_CAPACITY];
-        tree[0] = element;
+        heap = (U[]) new Object[DEFAULT_CAPACITY];
+        heap[0] = element;
     }
 
 
@@ -34,11 +34,10 @@ public class PriorityQ<U> {
      */
     public void addElement(U obj)
     {
-        //PrioritizedObject<T> obj = new PrioritizedObject<T>(object, priority);
-        if (count == tree.length)
+        if (count == heap.length)
             expandCapacity();
 
-        tree[count] = obj;
+        heap[count] = obj;
         count++;
         modCount++;
 
@@ -55,24 +54,24 @@ public class PriorityQ<U> {
         U temp;
         int next = count - 1;
 
-        temp = tree[next];
+        temp = heap[next];
 
         while ((next != 0) &&
-                (((Comparable)temp).compareTo(tree[(next-1)/2]) < 0))
+                (((Comparable)temp).compareTo(heap[(next-1)/2]) < 0))
         {
 
-            tree[next] = tree[(next-1)/2];
+            heap[next] = heap[(next-1)/2];
             next = (next-1)/2;
         }
 
-        tree[next] = temp;
+        heap[next] = temp;
     }
 
 
     public U removeMin()
     {
-        U minElement = tree[0];
-        tree[0] = tree[count-1];
+        U minElement = heap[0];
+        heap[0] = heap[count-1];
         heapifyRemove();
         count--;
         modCount--;
@@ -92,39 +91,71 @@ public class PriorityQ<U> {
         int right = 2;
         int next;
 
-        if ((tree[left] == null) && (tree[right] == null))
+        if ((heap[left] == null) && (heap[right] == null))
             next = count;
-        else if (tree[right] == null)
+        else if (heap[right] == null)
             next = left;
-        else if (((Comparable)tree[left]).compareTo(tree[right]) < 0)
+        else if (((Comparable) heap[left]).compareTo(heap[right]) < 0)
             next = left;
         else
             next = right;
-        temp = tree[node];
+        temp = heap[node];
 
         while ((next < count) &&
-                (((Comparable)tree[next]).compareTo(temp) < 0))
+                (((Comparable) heap[next]).compareTo(temp) < 0))
         {
-            tree[node] = tree[next];
+            heap[node] = heap[next];
             node = next;
             left = 2 * node + 1;
             right = 2 * (node + 1);
-            if ((tree[left] == null) && (tree[right] == null))
+            if ((heap[left] == null) && (heap[right] == null))
                 next = count;
-            else if (tree[right] == null)
+            else if (heap[right] == null)
                 next = left;
-            else if (((Comparable)tree[left]).compareTo(tree[right]) < 0)
+            else if (((Comparable) heap[left]).compareTo(heap[right]) < 0)
                 next = left;
             else
                 next = right;
         }
-        tree[node] = temp;
+        heap[node] = temp;
+    }
+
+
+    public void minHeapify(int i) {
+        int left = 2 * i + 1;
+        int right = 2 * i + 2;
+
+        int smallest = i;
+
+        if (left < size() && lessThan(left, smallest))
+            smallest = left;
+
+        if (right < size() && lessThan(right, smallest))
+            smallest = right;
+
+        if (smallest != i) {
+            swap(smallest, i);
+            minHeapify(smallest);
+        }
+    }
+
+    private void swap(int i, int j) {
+        U t = heap[i];
+        heap[i] = heap[j];
+        heap[j] = t;
+    }
+
+    public boolean lessThan(int i, int j) {
+        Graph.Vertex v1 = (Graph.Vertex)heap[i];
+        Graph.Vertex v2 = (Graph.Vertex)heap[j];
+
+        return v1.compareTo(v2) < 0;
     }
 
 
     public U findMin()
     {
-        return tree[0];
+        return heap[0];
     }
 
 
@@ -134,19 +165,19 @@ public class PriorityQ<U> {
      */
     protected void expandCapacity()
     {
-        tree = Arrays.copyOf(tree, tree.length * 2);
+        heap = Arrays.copyOf(heap, heap.length * 2);
     }
 
 
     public U getRootElement()
     {
-        return tree[0];
+        return heap[0];
     }
 
     /**
-     * Returns true if this binary tree is empty and false otherwise.
+     * Returns true if this binary heap is empty and false otherwise.
      *
-     * @return true if this binary tree is empty, false otherwise
+     * @return true if this binary heap is empty, false otherwise
      */
     public boolean isEmpty()
     {
@@ -154,9 +185,9 @@ public class PriorityQ<U> {
     }
 
     /**
-     * Returns the integer size of this binary tree.
+     * Returns the integer size of this binary heap.
      *
-     * @return the integer size of this binary tree
+     * @return the integer size of this binary heap
      */
     public int size()
     {
@@ -164,11 +195,11 @@ public class PriorityQ<U> {
     }
 
     /**
-     * Returns true if this tree contains an element that matches the
+     * Returns true if this heap contains an element that matches the
      * specified target element and false otherwise.
      *
-     * @param targetElement the element being sought in the tree
-     * @return true if the element is in this tree
+     * @param targetElement the element being sought in the heap
+     * @return true if the element is in this heap
      */
     public boolean contains(U targetElement)
     {
@@ -194,12 +225,12 @@ public class PriorityQ<U> {
         U temp = null;
         boolean found = false;
 
-        for (int i = 0; i < tree.length && !found; i++)
-            if (tree[i] != null)
-                if (targetElement.equals(tree[i]))
+        for (int i = 0; i < heap.length && !found; i++)
+            if (heap[i] != null)
+                if (targetElement.equals(heap[i]))
                 {
                     found = true;
-                    temp = tree[i];
+                    temp = heap[i];
                 }
         return temp;
     }

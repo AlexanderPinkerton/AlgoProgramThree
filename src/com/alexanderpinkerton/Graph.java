@@ -148,6 +148,23 @@ public class Graph<T> {
         //Creating a starting point for the loop.
         toVisit.add(current);
 
+
+        while(!toVisit.isEmpty()) {
+            //removes from front of queue
+            Vertex r = toVisit.remove();
+            //Visit child first before grandchild
+            for(int i=0;i<r.getOutgoingEdges().size();i++) {
+                Edge n = (Edge) r.getOutgoingEdges().get(i);
+                if(!n.getEnd().isVisited()) {
+                    toVisit.add(n.getEnd());
+                    n.getEnd().setVisited(true);
+                    reachable.add(n.getEnd());
+                }
+            }
+        }
+
+
+        /*
         //While every reachable vertex has not yet been visited.
         while(!toVisit.isEmpty() && !current.isVisited()){
             //Check all outgoing edges of the current vertex and and their endpoints to the visit queue.
@@ -161,6 +178,7 @@ public class Graph<T> {
             //Update the current vertex to the next one in the queue
             current = toVisit.poll();
         }
+        */
 
         Iterator iterator = reachable.iterator();
         while(iterator.hasNext()){
@@ -176,11 +194,70 @@ public class Graph<T> {
         while (it.hasNext()) {
             Map.Entry pair = (Map.Entry)it.next();
             System.out.println(pair.getValue().toString());
-            getReachable(pair.getValue().toString());
+            Vertex v = (Vertex)pair.getValue();
+            getReachable(v.getName());
         }
     }
 
     public void getShortestPath(String startName, String endName){
+
+
+
+        Vertex start = getVertex(startName);
+        Vertex end = getVertex(endName);
+
+        PriorityQ<Vertex> queue = new PriorityQ<>();
+        ArrayList<String> path = new ArrayList<>();
+
+        //For Every vertex in the graph, init the distance from source and previous pointers.
+        Iterator it = vertexList.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry)it.next();
+            Vertex v = (Vertex) pair.getValue();
+
+            if(pair.getValue().equals(start)){
+                v.setDistanceFromSource(0);
+            }else{
+                v.setDistanceFromSource(INFINITY);
+            }
+            v.setPrev(null);
+            queue.addElement(v);
+        }
+
+        while (!queue.isEmpty()){
+            //Retrieve the highest priority from the queue.
+            Vertex current = queue.removeMin();
+
+            //Scan all outgoing edges and update their distances and previous.
+            for(int i=0;i<current.outgoingEdges.size();i++){
+
+                Edge e = (Edge)current.getOutgoingEdges().get(i);
+                Vertex endVertex = e.getEnd();
+
+
+                if(current.distanceFromSource + e.getWeight() < endVertex.distanceFromSource){
+                    endVertex.setDistanceFromSource(current.distanceFromSource + e.getWeight());
+                    endVertex.setPrev(current);
+                    if(debug){System.out.println(endVertex.getName() + "'s previous node is " + current.getName());}
+                    if(debug){System.out.println(endVertex.getName() + "'s distance is " + endVertex.getDistanceFromSource());}
+                }
+            }
+        }
+
+        // Output the path in easy to read format
+        Vertex x = end;
+        path.add(end.getName());
+        while(x.prev!=null){
+            path.add(x.getPrev().getName());
+            x = x.getPrev();
+        }
+        Collections.reverse(path);
+        for(String s: path){System.out.print(s + " ");}
+        System.out.println(end.distanceFromSource);
+
+
+
+        /*
 
         Vertex start = getVertex(startName);
         Vertex end = getVertex(endName);
@@ -213,9 +290,7 @@ public class Graph<T> {
                 Edge e = (Edge)current.getOutgoingEdges().get(i);
                 Vertex endVertex = e.getEnd();
 
-                /***
-                 * As you discovered, a priority queue does not resort all elements whenever an element is added or removed.
-                 ***/
+
 
                 if(current.distanceFromSource + e.getWeight() < endVertex.distanceFromSource){
                     endVertex.setDistanceFromSource(current.distanceFromSource + e.getWeight());
@@ -226,7 +301,7 @@ public class Graph<T> {
             }
         }
 
-        /* Output the path in easy to read format */
+        // Output the path in easy to read format
         Vertex x = end;
         path.add(end.getName());
         while(x.prev!=null){
@@ -236,10 +311,12 @@ public class Graph<T> {
         Collections.reverse(path);
         for(String s: path){System.out.print(s + " ");}
         System.out.println(end.distanceFromSource);
+
+        */
     }
 
     //=======================================================================================================
-    private class Vertex<V> implements Comparable<Vertex>{
+    public class Vertex<V> implements Comparable<Vertex>{
         private float distanceFromSource;
         private boolean visited = false;
         private String name;
