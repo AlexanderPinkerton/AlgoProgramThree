@@ -6,7 +6,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-
+/**
+ * Created by Alexander Pinkerton on 4/15/15.
+ */
 
 public class Main {
 
@@ -16,6 +18,7 @@ public class Main {
         Graph graph = new Graph();
         //graph.setDebug(true);
 
+        //This will read in all of the lines from the input file and build the graph.
         try(BufferedReader br = new BufferedReader(new FileReader(args[0]))) {
             for(String line; (line = br.readLine()) != null; ) {
                 // process the line.
@@ -33,9 +36,6 @@ public class Main {
                         lineContents[1],
                         lineContents[0],
                         Float.parseFloat(lineContents[2]));
-
-
-
             }
         }catch (IOException e){
             e.printStackTrace();
@@ -43,7 +43,7 @@ public class Main {
 
 
 
-
+        //This loop is the controller for the console operations. It will delegate to the graph class.
         while(!input.equals("quit")){
             System.out.println("Awaiting Query: ");
             try{
@@ -77,14 +77,5 @@ public class Main {
             }
             System.out.println();
         }
-
-
-
-
-        //graph.removeEdge("Duke","Belk");
-        //graph.printGraph();
-        //graph.getShortestPath("Belk","Education");
-        //graph.printReachable();
-
     }
 }

@@ -3,10 +3,8 @@ package com.alexanderpinkerton;
 import java.util.*;
 
 /**
- * Created by Ace on 4/15/15.
+ * Created by Alexander Pinkerton on 4/15/15.
  */
-
-
 
 public class Graph<T> {
 
@@ -20,7 +18,12 @@ public class Graph<T> {
     private Map<String,Vertex> vertexList = new HashMap<>( );
 
 
-
+    /**
+     * This method will take a String name of a vertex and will
+     * insert a new vertex into the graph with the specified name.
+     * @param name
+     * @return
+     */
     public Vertex addVertex(String name){
         if(!vertexList.containsKey(name)){
             Vertex v = new Vertex(name);
@@ -32,6 +35,14 @@ public class Graph<T> {
         return vertexList.get(name);
     }
 
+    /**
+     * This method will take a String name of a vertex and  an extra
+     * object for storing data. It will then insert a new vertex into the graph
+     * with the specified name.
+     * @param name
+     * @param data
+     * @return
+     */
     public Vertex addVertex(String name, T data){
         if(!vertexList.containsKey(name)){
             Vertex v = new Vertex(name, data);
@@ -43,6 +54,13 @@ public class Graph<T> {
         return vertexList.get(name);
     }
 
+    /**
+     * This method will add an edge to the graph.
+     * If no vertex is found with the specified name,
+     * one will be created.
+     * @param start
+     * @param end
+     */
     public void addEdge(String start, String end){
         //Add vertex if it is not there.
         if(!vertexExists(start)){
@@ -57,6 +75,10 @@ public class Graph<T> {
         if(debug){System.out.println("Edge Added");}
     }
 
+    /**
+     * This method will add an edge to the graph.
+     * If a vertex does not exist, it will be created.
+     */
     public void addEdge(String start, String end, float weight){
         //Add vertex if it is not there.
         if(!vertexExists(start)){
@@ -71,6 +93,11 @@ public class Graph<T> {
         if(debug){System.out.println("Edge Added");}
     }
 
+    /**
+     * This method will remove an edge from the graph.
+     * @param start
+     * @param end
+     */
     public void removeEdge(Vertex start, Vertex end){
         //Loop through the linked list via an iterator and remove the matching edge.
         for(Iterator<Edge> it=start.getOutgoingEdges().iterator(); it.hasNext(); ) {
@@ -82,6 +109,11 @@ public class Graph<T> {
         }
     }
 
+    /**
+     * This method will remove an edge from the graph.
+     * @param startName
+     * @param endName
+     */
     public void removeEdge(String startName, String endName){
         //Loop through the linked list via an iterator and remove the matching edge.
         Vertex start = vertexList.get(startName);
@@ -100,11 +132,17 @@ public class Graph<T> {
         return vertexList.get(name);
     }
 
+    /**
+     * This method will take a string name and return a
+     * matching vertex.
+     * @param vertexName
+     * @return
+     */
     public boolean vertexExists(String vertexName){
         if(getVertex(vertexName) != null){
             return true;
         }else{
-            System.out.println("Vertex not found");
+            if(debug)System.out.println("Vertex not found");
             return false;
         }
     }
@@ -129,6 +167,10 @@ public class Graph<T> {
         this.debug = debug;
     }
 
+    /**
+     * This will sort the hashmap with a TreeMap before printing all
+     * vertices and the edges they contain.
+     */
     public void printGraph(){
         //Sort the hashMap
         Map<String, Vertex> sortedMap = new TreeMap<>(vertexList);
@@ -141,6 +183,11 @@ public class Graph<T> {
 
     }
 
+    /**
+     * This method will take a vertex as a starting point and preform a BFS search
+     * from each vertex to find all other reachable nodes. O( V + E )
+     * @param vertex
+     */
     public void getReachable(String vertex){
         Set<Vertex> reachable = new HashSet<>();
         Queue<Vertex> toVisit = new LinkedList<>();
@@ -148,11 +195,11 @@ public class Graph<T> {
         //Creating a starting point for the loop.
         toVisit.add(current);
 
-
+        //While the queue is not empty.
         while(!toVisit.isEmpty()) {
-            //removes from front of queue
+            //get the new current node.
             Vertex r = toVisit.remove();
-            //Visit child first before grandchild
+            //Find all outgoing edges and add their endpoints to the queue.
             for(int i=0;i<r.getOutgoingEdges().size();i++) {
                 Edge n = (Edge) r.getOutgoingEdges().get(i);
                 if(!n.getEnd().isVisited()) {
@@ -180,6 +227,7 @@ public class Graph<T> {
         }
         */
 
+        //Print the vertices and their reachable nodes.
         Iterator iterator = reachable.iterator();
         while(iterator.hasNext()){
             Vertex vert = (Vertex)iterator.next();
@@ -188,6 +236,10 @@ public class Graph<T> {
         }
     }
 
+    /**
+     * This method will first sort the vertices in the hashmap before
+     * printing out each vertex followed by all of the vertices it can reach.
+     */
     public void printReachable(){
         Map<String, Vertex> sortedMap = new TreeMap<>(vertexList);
         Iterator it = sortedMap.entrySet().iterator();
@@ -199,9 +251,16 @@ public class Graph<T> {
         }
     }
 
+    /**
+     * This method will take a starting and ending vertex and will
+     * compute the shortest path between them via Djikstra's Algorithm.
+     * The Algorithm has been implemented with a custom priority queue as
+     * well as Javas Priority Queue.
+     * This Method has a runtime of (V+E)Log(v)
+     * @param startName
+     * @param endName
+     */
     public void getShortestPath(String startName, String endName){
-
-
 
         Vertex start = getVertex(startName);
         Vertex end = getVertex(endName);
@@ -224,6 +283,7 @@ public class Graph<T> {
             queue.addElement(v);
         }
 
+        //This is the main loop. While the queue is not empty, make a greedy choice.
         while (!queue.isEmpty()){
             //Retrieve the highest priority from the queue.
             Vertex current = queue.removeMin();
@@ -233,7 +293,6 @@ public class Graph<T> {
 
                 Edge e = (Edge)current.getOutgoingEdges().get(i);
                 Vertex endVertex = e.getEnd();
-
 
                 if(current.distanceFromSource + e.getWeight() < endVertex.distanceFromSource){
                     endVertex.setDistanceFromSource(current.distanceFromSource + e.getWeight());

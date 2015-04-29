@@ -3,6 +3,10 @@ package com.alexanderpinkerton;
 
 import java.util.Arrays;
 
+/**
+ * Created by Alexander Pinkerton on 4/15/15.
+ */
+
 public class PriorityQ<U> {
 
     private static final int DEFAULT_CAPACITY = 50;
@@ -120,7 +124,10 @@ public class PriorityQ<U> {
         heap[node] = temp;
     }
 
-
+    /**
+     * This method will ensure heap order from the given index.
+     * @param i
+     */
     public void minHeapify(int i) {
         int left = 2 * i + 1;
         int right = 2 * i + 2;
@@ -139,6 +146,11 @@ public class PriorityQ<U> {
         }
     }
 
+    /**
+     * Simple Swapping method.
+     * @param i
+     * @param j
+     */
     private void swap(int i, int j) {
         U t = heap[i];
         heap[i] = heap[j];
