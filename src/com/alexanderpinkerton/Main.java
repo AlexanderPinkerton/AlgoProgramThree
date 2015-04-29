@@ -55,7 +55,11 @@ public class Main {
                         graph.addEdge(commandArgs[1],commandArgs[2]);
                         break;
                     case "deleteedge":
-                        graph.removeEdge(commandArgs[2],commandArgs[1]);
+                        if(graph.getVertex(commandArgs[2]) != null && graph.getVertex(commandArgs[1]) != null){
+                            graph.removeEdge(commandArgs[2],commandArgs[1]);
+                        }else{
+                            System.out.println("Vertex not found");
+                        }
                         break;
                     case "path":
                         graph.getShortestPath(commandArgs[1],commandArgs[2]);
@@ -67,9 +71,10 @@ public class Main {
                         graph.printGraph();
                         break;
                     default:
-                        System.out.println("Incorrect Command. Wrong arguments?");
+                        if(!input.equals("quit")){
+                            System.out.println("Incorrect Command. Wrong arguments?");
+                        }
                 }
-
             }
             catch(IOException e)
             {

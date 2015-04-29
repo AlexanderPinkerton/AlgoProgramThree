@@ -1,0 +1,20 @@
+Compiler Used: IntelliJ
+
+Program Description:
+    This program will allow the input of console commands to manipulate a graph.
+    The program has all typical graph functionality for traversing and analyzing.
+    The graph class uses generics to allow for easier reuse and includes
+    Djikstra's Algorithm to find the shortest path as well as a BFS based search to find
+    all reachable vertices.
+
+File Breakdown:
+    Graph.java contains all code needed to construct a graph including two inner classes, Edge and Vertex.
+    Main.java is the Driver class to allow for console commands.
+    PriorityQ.java is a custom priority queue implemented in a heap for use in Djikstra's algo.
+
+Data Structures:
+    I created a graph using generics so I would be able to use it in future projects.
+    The shortest path method uses a queue, as it is required for the algorithm.
+
+
+Everything should be working as intended.

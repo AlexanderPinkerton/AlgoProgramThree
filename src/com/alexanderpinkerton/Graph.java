@@ -262,57 +262,67 @@ public class Graph<T> {
      */
     public void getShortestPath(String startName, String endName){
 
-        Vertex start = getVertex(startName);
-        Vertex end = getVertex(endName);
+        if(getVertex(startName) != null && getVertex(endName) != null) {
 
-        PriorityQ<Vertex> queue = new PriorityQ<>();
-        ArrayList<String> path = new ArrayList<>();
+            Vertex start = getVertex(startName);
+            Vertex end = getVertex(endName);
 
-        //For Every vertex in the graph, init the distance from source and previous pointers.
-        Iterator it = vertexList.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry pair = (Map.Entry)it.next();
-            Vertex v = (Vertex) pair.getValue();
+            PriorityQ<Vertex> queue = new PriorityQ<>();
+            ArrayList<String> path = new ArrayList<>();
 
-            if(pair.getValue().equals(start)){
-                v.setDistanceFromSource(0);
-            }else{
-                v.setDistanceFromSource(INFINITY);
+            //For Every vertex in the graph, init the distance from source and previous pointers.
+            Iterator it = vertexList.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry pair = (Map.Entry) it.next();
+                Vertex v = (Vertex) pair.getValue();
+
+                if (pair.getValue().equals(start)) {
+                    v.setDistanceFromSource(0);
+                } else {
+                    v.setDistanceFromSource(INFINITY);
+                }
+                v.setPrev(null);
+                queue.addElement(v);
             }
-            v.setPrev(null);
-            queue.addElement(v);
-        }
 
-        //This is the main loop. While the queue is not empty, make a greedy choice.
-        while (!queue.isEmpty()){
-            //Retrieve the highest priority from the queue.
-            Vertex current = queue.removeMin();
+            //This is the main loop. While the queue is not empty, make a greedy choice.
+            while (!queue.isEmpty()) {
+                //Retrieve the highest priority from the queue.
+                Vertex current = queue.removeMin();
 
-            //Scan all outgoing edges and update their distances and previous.
-            for(int i=0;i<current.outgoingEdges.size();i++){
+                //Scan all outgoing edges and update their distances and previous.
+                for (int i = 0; i < current.outgoingEdges.size(); i++) {
 
-                Edge e = (Edge)current.getOutgoingEdges().get(i);
-                Vertex endVertex = e.getEnd();
+                    Edge e = (Edge) current.getOutgoingEdges().get(i);
+                    Vertex endVertex = e.getEnd();
 
-                if(current.distanceFromSource + e.getWeight() < endVertex.distanceFromSource){
-                    endVertex.setDistanceFromSource(current.distanceFromSource + e.getWeight());
-                    endVertex.setPrev(current);
-                    if(debug){System.out.println(endVertex.getName() + "'s previous node is " + current.getName());}
-                    if(debug){System.out.println(endVertex.getName() + "'s distance is " + endVertex.getDistanceFromSource());}
+                    if (current.distanceFromSource + e.getWeight() < endVertex.distanceFromSource) {
+                        endVertex.setDistanceFromSource(current.distanceFromSource + e.getWeight());
+                        endVertex.setPrev(current);
+                        //Restore heap order.
+                        queue.minHeapify(0);
+                        if (debug) {
+                            System.out.println(endVertex.getName() + "'s previous node is " + current.getName());
+                        }
+                        if (debug) {
+                            System.out.println(endVertex.getName() + "'s distance is " + endVertex.getDistanceFromSource());
+                        }
+                    }
                 }
             }
-        }
 
-        // Output the path in easy to read format
-        Vertex x = end;
-        path.add(end.getName());
-        while(x.prev!=null){
-            path.add(x.getPrev().getName());
-            x = x.getPrev();
-        }
-        Collections.reverse(path);
-        for(String s: path){System.out.print(s + " ");}
-        System.out.println(end.distanceFromSource);
+            // Output the path in easy to read format
+            Vertex x = end;
+            path.add(end.getName());
+            while (x.prev != null) {
+                path.add(x.getPrev().getName());
+                x = x.getPrev();
+            }
+            Collections.reverse(path);
+            for (String s : path) {
+                System.out.print(s + " ");
+            }
+            System.out.println(end.distanceFromSource);
 
 
 
@@ -372,6 +382,9 @@ public class Graph<T> {
         System.out.println(end.distanceFromSource);
 
         */
+        }else{
+            System.out.println("Invalid Input.");
+        }
     }
 
     //=======================================================================================================
